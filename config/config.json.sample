@@ -1,0 +1,21 @@
+{
+    "shapefile_path": {
+        "rail": "",
+        "station": ""
+    },
+    "section_list": [
+        {
+            "company": "",
+            "line": "",
+            "start": "",
+            "goal": ""
+        },
+        {
+            "company": "",
+            "line": "",
+            "start": "",
+            "goal": ""
+        }
+    ],
+    "is_including_middles": ""
+}
