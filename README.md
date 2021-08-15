@@ -29,7 +29,7 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-#### Windowsの場合は仮想環境作成・起動をバッチファイルでも実行可能
+#### 仮想環境作成・起動はバッチファイルでも実行可能（Windowsの場合）
 
 1. ``setup_venv.cmd``を実行し、仮想環境を作成する。
 1. ``run.cmd``を実行し、アプリケーションを起動する。
