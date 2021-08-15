@@ -29,6 +29,11 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
+#### Windowsの場合は仮想環境作成・起動をバッチファイルでも実行可能
+
+1. ``setup_venv.cmd``を実行し、仮想環境を作成する。
+1. ``run.cmd``を実行し、アプリケーションを起動する。
+
 ### 注意
 
 [国土数値情報](https://nlftp.mlit.go.jp/ksj/)は、[利用規約](https://nlftp.mlit.go.jp/ksj/other/agreement.html)にしたがって使用すること。  
