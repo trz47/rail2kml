@@ -9,6 +9,10 @@ import shapefile
 import simplekml
 
 
+class PathSearchError(Exception):
+    pass
+
+
 def relpath_to_abspath(rel_path):
     abs_path = os.path.join(os.path.dirname(__file__), rel_path)
     return abs_path
@@ -66,7 +70,7 @@ def get_stations_edges(section, shape_recs_station):
         else:
             pass
     if len(stations_edges["start"]) == 0:
-        print(
+        err_msg = (
             "Station is not found."
             + "（"
             + section["company"]
@@ -76,9 +80,9 @@ def get_stations_edges(section, shape_recs_station):
             + section["start"]
             + "）"
         )
-        exit(1)
+        raise PathSearchError(err_msg)
     elif len(stations_edges["goal"]) == 0:
-        print(
+        err_msg = (
             "Station is not found."
             + "("
             + section["company"]
@@ -88,7 +92,7 @@ def get_stations_edges(section, shape_recs_station):
             + section["goal"]
             + ")"
         )
-        exit(1)
+        raise PathSearchError(err_msg)
     else:
         pass
     return stations_edges
@@ -229,8 +233,8 @@ def get_section_edges(section, shape_recs, patch):
     stations_edges["start"] -= unused_station_edges["start"]
     stations_edges["goal"] -= unused_station_edges["goal"]
     if len(section_edges) == 0:
-        print("Path not found.")
-        exit(1)
+        err_msg = "Path not found."
+        raise PathSearchError(err_msg)
     else:
         pass
     stations_edges = get_middle_stations(section_edges, stations_edges)
@@ -274,7 +278,7 @@ def output_kml(
     section_list,
     is_including_middles,
     SAVE_PATH,
-    is_abs
+    is_abs,
 ):
     kml_name = ""
     for section in section_list:
@@ -405,7 +409,7 @@ def main():
         section_list,
         is_including_middles_bool,
         SAVE_PATH,
-        PATH_IS_ABS
+        PATH_IS_ABS,
     )
 
 

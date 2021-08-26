@@ -350,12 +350,17 @@ class Application(ttk.Frame):
         patch = rail2kml.read_patch(PATCH_PATH)
         self.status.set("経路探索中")
         self.get_section_list()
-        (
-            section_edges_list,
-            stations_edges_list,
-        ) = rail2kml.get_section_edges_list(
-            self.section_list, self.shape_recs, patch
-        )
+        try:
+            (
+                section_edges_list,
+                stations_edges_list,
+            ) = rail2kml.get_section_edges_list(
+                self.section_list, self.shape_recs, patch
+            )
+        except rail2kml.PathSearchError as pse:
+            self.status.set("")
+            messagebox.showwarning("経路探索エラー", "経路探索に失敗しました。" + "\n" + str(pse))
+            return "break"
 
         self.status.set("kml保存中")
         try:
@@ -372,6 +377,7 @@ class Application(ttk.Frame):
         except FileNotFoundError:
             self.status.set("")
             messagebox.showwarning("kml保存エラー", "kmlの保存先を確認してください。")
+            return "break"
 
         return "break"
 
