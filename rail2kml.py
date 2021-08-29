@@ -112,20 +112,99 @@ def get_line_edges(line_name, company_name, shape_recs_rail, patch):
     return line_edges
 
 
+def is_equal_coordinate(target, base):
+    EQUAL_RANGE = 0.00001
+    if (
+        (base[0] - EQUAL_RANGE < target[0])
+        and (target[0] < base[0] + EQUAL_RANGE)
+    ) and (
+        (base[1] - EQUAL_RANGE < target[1])
+        and (target[1] < base[1] + EQUAL_RANGE)
+    ):
+        is_equal = True
+    else:
+        is_equal = False
+
+    return is_equal
+
+
+def is_equal_edge(target, base):
+    if len(target) == len(base):
+        is_equal = True
+        for target_coordinate, base_coordinate in zip(target, base):
+            if is_equal_coordinate(target_coordinate, base_coordinate):
+                pass
+            else:
+                is_equal = False
+                break
+    else:
+        is_equal = False
+
+    return is_equal
+
+
+def is_equal_edge_both_directions(target, base):
+    if is_equal_edge(target, base) or is_equal_edge(
+        tuple(reversed(target)), base
+    ):
+        is_equal = True
+    else:
+        is_equal = False
+
+    return is_equal
+
+
+def is_included_in_edges(target, edges):
+    is_included = False
+    for edge in edges:
+        if is_equal_edge(target, edge):
+            is_included = True
+            break
+        else:
+            pass
+
+    return is_included
+
+
+def is_included_in_edges_both_directions(target, edges):
+    if is_included_in_edges(target, edges) or is_included_in_edges(
+        tuple(reversed(target)), edges
+    ):
+        is_included = True
+    else:
+        is_included = False
+
+    return is_included
+
+
+def get_equal_edge_from_edges_both_directions(target, edges):
+    equal_edge = None
+    for edge in edges:
+        if is_equal_edge(target, edge) or is_equal_edge(
+            tuple(reversed(target)), edge
+        ):
+            equal_edge = edge
+            break
+
+    return equal_edge
+
+
 def path_search(station_edges, line_edges):
     def path_search_innner(start_point, passed_edges, before_passed_edge):
         nonlocal section_edges, unreachable_edges, station_edges, line_edges
         is_unreachable = 1
         is_by_passed = 0
         for line_edge in line_edges:
-            if line_edge[0] == start_point and line_edge not in passed_edges:
+            if (
+                is_equal_coordinate(line_edge[0], start_point)
+                and line_edge not in passed_edges
+            ):
                 is_unreachable = 0
                 if line_edge in section_edges:
                     section_edges |= passed_edges
                 elif line_edge not in unreachable_edges:
-                    if (
-                        line_edge == station_edges["goal"]
-                        or tuple(reversed(line_edge)) == station_edges["goal"]
+                    if is_equal_edge_both_directions(
+                        line_edge, station_edges["goal"]
                     ):
                         section_edges |= passed_edges | set([line_edge])
                     else:
@@ -137,15 +216,15 @@ def path_search(station_edges, line_edges):
                 else:
                     pass
             elif (
-                line_edge[-1] == start_point and line_edge not in passed_edges
+                is_equal_coordinate(line_edge[-1], start_point)
+                and line_edge not in passed_edges
             ):
                 is_unreachable = 0
                 if line_edge in section_edges:
                     section_edges |= passed_edges
                 elif line_edge not in unreachable_edges:
-                    if (
-                        line_edge == station_edges["goal"]
-                        or tuple(reversed(line_edge)) == station_edges["goal"]
+                    if is_equal_edge_both_directions(
+                        line_edge, station_edges["goal"]
                     ):
                         section_edges |= passed_edges | set([line_edge])
                     else:
@@ -167,22 +246,29 @@ def path_search(station_edges, line_edges):
         else:
             pass
 
+    start_station_edge_in_line = get_equal_edge_from_edges_both_directions(
+        station_edges["start"], line_edges
+    )
     section_edges = set()
     unreachable_edges = set()
-    path_search_innner(
-        station_edges["start"][-1],
-        set([station_edges["start"]]),
-        station_edges["start"],
-    )
+    if start_station_edge_in_line is not None:
+        path_search_innner(
+            start_station_edge_in_line[-1],
+            set([start_station_edge_in_line]),
+            start_station_edge_in_line,
+        )
     section_edges_forward = section_edges
+
     section_edges = set()
     unreachable_edges = set()
-    path_search_innner(
-        station_edges["start"][0],
-        set([station_edges["start"]]),
-        station_edges["start"],
-    )
+    if start_station_edge_in_line is not None:
+        path_search_innner(
+            start_station_edge_in_line[0],
+            set([start_station_edge_in_line]),
+            start_station_edge_in_line,
+        )
     section_edges_reverse = section_edges
+
     if len(section_edges_forward) != 0 and len(section_edges_reverse) != 0:
         if len(section_edges_forward) <= len(section_edges_reverse):
             section_edges = section_edges_forward
@@ -192,15 +278,15 @@ def path_search(station_edges, line_edges):
         section_edges = section_edges_forward
     else:
         section_edges = section_edges_reverse
+
     return section_edges
 
 
 def get_middle_stations(section_edges, stations_edges):
     middle_station_edges = set()
     for other_station_edges in stations_edges["others"]:
-        if (
-            other_station_edges[1] in section_edges
-            or tuple(reversed(other_station_edges[1])) in section_edges
+        if is_included_in_edges_both_directions(
+            other_station_edges[1], section_edges
         ):
             middle_station_edges.add(other_station_edges)
         else:
@@ -216,7 +302,12 @@ def get_section_edges(section, shape_recs, patch):
     )
     stations_edges = get_stations_edges(section, shape_recs["station"])
     section_edges = set()
-    unused_station_edges = dict({"start": set(), "goal": set()})
+    unused_station_edges = dict(
+        {
+            "start": set(stations_edges["start"]),
+            "goal": set(stations_edges["goal"]),
+        }
+    )
     for start_station_edges in stations_edges["start"]:
         for goal_station_edges in stations_edges["goal"]:
             station_edges = dict(
@@ -225,8 +316,7 @@ def get_section_edges(section, shape_recs, patch):
             section_edges_each = path_search(station_edges, line_edges)
             section_edges |= section_edges_each
             if len(section_edges_each) == 0:
-                unused_station_edges["start"].add(start_station_edges)
-                unused_station_edges["goal"].add(goal_station_edges)
+                pass
             else:
                 unused_station_edges["start"].discard(start_station_edges)
                 unused_station_edges["goal"].discard(goal_station_edges)
