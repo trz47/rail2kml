@@ -204,7 +204,7 @@ class Application(ttk.Frame):
                     cmmbbx = self.section_cmbbxs_lst[i][cmbbx_typ]
                     if cmbbx_typ == "company":
                         cmmbbx["widget"]["values"] = list(
-                            self.stations_dict.keys()
+                            sorted(self.stations_dict.keys())
                         )
                         self.act_cmbbx(cmmbbx)
                     else:
@@ -254,7 +254,7 @@ class Application(ttk.Frame):
                         if cmbbx_typ == "company":
                             if company in self.stations_dict.keys():
                                 line_cmbbx["widget"]["values"] = list(
-                                    self.stations_dict[company].keys()
+                                    sorted(self.stations_dict[company].keys())
                                 )
                                 self.act_cmbbx(line_cmbbx)
                                 self.diact_cmbbx(start_cmbbx)
@@ -274,10 +274,10 @@ class Application(ttk.Frame):
                         elif cmbbx_typ == "line":
                             if line in self.stations_dict[company].keys():
                                 start_cmbbx["widget"]["values"] = list(
-                                    self.stations_dict[company][line]
+                                    sorted(self.stations_dict[company][line])
                                 )
                                 goal_cmbbx["widget"]["values"] = list(
-                                    self.stations_dict[company][line]
+                                    sorted(self.stations_dict[company][line])
                                 )
                                 self.act_cmbbx(start_cmbbx)
                                 self.act_cmbbx(goal_cmbbx)
