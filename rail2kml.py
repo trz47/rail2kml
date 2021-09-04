@@ -236,7 +236,8 @@ def path_search(station_edges, line_edges):
                 else:
                     pass
             elif (
-                line_edge[0] == start_point or line_edge[-1] == start_point
+                is_equal_coordinate(line_edge[0], start_point)
+                or is_equal_coordinate(line_edge[-1], start_point)
             ) and line_edge != before_passed_edge:
                 is_by_passed = 1
             else:
