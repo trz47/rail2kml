@@ -189,8 +189,28 @@ def get_equal_edge_from_edges_both_directions(target, edges):
     return equal_edge
 
 
+def is_ocute_angle(target, base):
+    target_x = target[-1][0] - target[0][0]
+    target_y = target[-1][1] - target[0][1]
+    base_x = base[-1][0] - base[0][0]
+    base_y = base[-1][1] - base[0][1]
+    target_norm = math.dist(target[0], target[-1])
+    base_norm = math.dist(base[0], base[-1])
+    innner_product = (target_x * base_x) + (target_y * base_y)
+    acos = math.acos(innner_product / (target_norm * base_norm))
+
+    if acos < (math.pi / 2):
+        is_acute = True
+    else:
+        is_acute = False
+
+    return is_acute
+
+
 def path_search(station_edges, line_edges):
-    def path_search_innner(start_point, passed_edges, before_passed_edge):
+    def path_search_innner(
+        start_point, adj_start_point, passed_edges, before_passed_edge
+    ):
         nonlocal section_edges, unreachable_edges, station_edges, line_edges
         is_unreachable = 1
         is_by_passed = 0
@@ -198,6 +218,10 @@ def path_search(station_edges, line_edges):
             if (
                 is_equal_coordinate(line_edge[0], start_point)
                 and line_edge not in passed_edges
+                and is_ocute_angle(
+                    tuple((line_edge[0], line_edge[1])),
+                    tuple((adj_start_point, start_point)),
+                )
             ):
                 is_unreachable = 0
                 if line_edge in section_edges:
@@ -210,6 +234,7 @@ def path_search(station_edges, line_edges):
                     else:
                         path_search_innner(
                             line_edge[-1],
+                            line_edge[-2],
                             passed_edges | set([line_edge]),
                             line_edge,
                         )
@@ -218,6 +243,10 @@ def path_search(station_edges, line_edges):
             elif (
                 is_equal_coordinate(line_edge[-1], start_point)
                 and line_edge not in passed_edges
+                and is_ocute_angle(
+                    tuple((line_edge[-1], line_edge[-2])),
+                    tuple((adj_start_point, start_point)),
+                )
             ):
                 is_unreachable = 0
                 if line_edge in section_edges:
@@ -230,6 +259,7 @@ def path_search(station_edges, line_edges):
                     else:
                         path_search_innner(
                             line_edge[0],
+                            line_edge[1],
                             passed_edges | set([line_edge]),
                             line_edge,
                         )
@@ -255,6 +285,7 @@ def path_search(station_edges, line_edges):
     if start_station_edge_in_line is not None:
         path_search_innner(
             start_station_edge_in_line[-1],
+            start_station_edge_in_line[-2],
             set([start_station_edge_in_line]),
             start_station_edge_in_line,
         )
@@ -265,6 +296,7 @@ def path_search(station_edges, line_edges):
     if start_station_edge_in_line is not None:
         path_search_innner(
             start_station_edge_in_line[0],
+            start_station_edge_in_line[1],
             set([start_station_edge_in_line]),
             start_station_edge_in_line,
         )
