@@ -189,7 +189,7 @@ def get_equal_edge_from_edges_both_directions(target, edges):
     return equal_edge
 
 
-def is_ocute_angle(target, base):
+def is_acute_angle(target, base):
     target_x = target[-1][0] - target[0][0]
     target_y = target[-1][1] - target[0][1]
     base_x = base[-1][0] - base[0][0]
@@ -218,7 +218,7 @@ def path_search(station_edges, line_edges):
             if (
                 is_equal_coordinate(line_edge[0], start_point)
                 and line_edge not in passed_edges
-                and is_ocute_angle(
+                and is_acute_angle(
                     tuple((line_edge[0], line_edge[1])),
                     tuple((adj_start_point, start_point)),
                 )
@@ -243,7 +243,7 @@ def path_search(station_edges, line_edges):
             elif (
                 is_equal_coordinate(line_edge[-1], start_point)
                 and line_edge not in passed_edges
-                and is_ocute_angle(
+                and is_acute_angle(
                     tuple((line_edge[-1], line_edge[-2])),
                     tuple((adj_start_point, start_point)),
                 )
