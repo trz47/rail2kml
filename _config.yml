@@ -1,2 +1,5 @@
 show_downloads: true
 theme: jekyll-theme-cayman
+
+plugins:
+ - jekyll-sitemap
