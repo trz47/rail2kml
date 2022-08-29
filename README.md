@@ -14,10 +14,18 @@
 
 ### 実行
 
+#### バッチファイルによる簡単な実行方法（Windowsのみ）
+
+1. [Python 3](https://www.python.org/) をダウンロードして、インストール。（最新版で恐らく大丈夫。動作確認は Python 3.9.5 で実施。）
+1. ``setup_venv.cmd``を実行し、実行環境を作成。（初回のみ）
+1. ``run.cmd``を実行し、アプリケーションを起動。
+
+#### Windows以外での実行方法（上記バッチファイルでやっていることの説明）
+
 実行には [Python 3](https://www.python.org/) が必要。（Python 3.9.5 で動作確認済み。）  
-必要なパッケージは``requirements.txt``の通りである。  
+必要なパッケージは``requirements.txt``の通り。  
 以下を実行するとインストールされる。  
-この際、[仮想環境](https://docs.python.org/ja/3/library/venv.html)を作成することを推奨する。
+この際、[仮想環境](https://docs.python.org/ja/3/library/venv.html)を作成することを推奨。
 
 ``` [bash]
 pip install -r requirements.txt
@@ -28,11 +36,6 @@ pip install -r requirements.txt
 ``` [bash]
 python3 app.py
 ```
-
-#### 仮想環境作成・起動はバッチファイルでも実行可能（Windowsの場合）
-
-1. ``setup_venv.cmd``を実行し、仮想環境を作成する。
-1. ``run.cmd``を実行し、アプリケーションを起動する。
 
 ### 注意
 
