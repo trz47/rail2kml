@@ -4,17 +4,17 @@
 #
 #    pip-compile requirements_dev.in
 #
-black==21.8b0
+black==24.3.0
     # via -r requirements_dev.in
 click==8.0.1
     # via black
-colorama==0.4.4
-    # via click
 flake8==3.9.2
     # via -r requirements_dev.in
 mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
+    # via black
+packaging==24.0
     # via black
 pathspec==0.9.0
     # via black
@@ -26,11 +26,9 @@ pyflakes==2.3.1
     # via flake8
 pyshp==2.1.3
     # via -r requirements_dev.in
-regex==2021.8.28
-    # via black
 simplekml==1.3.5
     # via -r requirements_dev.in
 tomli==1.2.1
     # via black
-typing-extensions==3.10.0.1
+typing-extensions==4.10.0
     # via black
